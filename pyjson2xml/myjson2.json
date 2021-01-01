@@ -1,0 +1,12 @@
+{
+  "name": "John",
+  "email": "john@email.com",
+  "languages": {
+    "nodejs": {
+      "proficiency": "proficient"
+    },
+   "python": {
+     "proficiency": "expert"
+    }
+  }
+}

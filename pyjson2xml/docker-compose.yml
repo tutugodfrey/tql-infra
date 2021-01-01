@@ -1,0 +1,24 @@
+version: '3'
+services:
+  encrypt-container:
+    container_name: encrypt-container
+    build: .
+    image: encrypt-img
+    command: /bin/bash
+    volumes:
+      - sharedir:/shared
+
+  decrypt-container:
+    container_name: decrypt-container
+    build:
+      context: .
+      dockerfile: Dockerfile_dec
+    image: decrypt-img
+    command: /bin/bash
+    volumes:
+      - sharedir:/shared
+
+volumes:
+  sharedir:
+    driver: local
+
