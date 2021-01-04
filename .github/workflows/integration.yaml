@@ -1,0 +1,31 @@
+name: Integration Test
+on: push
+jobs:
+  go-tests:
+    name: Run Go Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set the value
+        id: step_one
+        run: |
+          echo "PR_AUTHOR=${{ github.event.pull_request.user.login }}" >> $GITHUB_ENV
+          echo "PR_AUTHOR=${{ github.event.issue.user.login }}" >> $GITHUB_ENV
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.13
+      - uses: autero1/action-terraform@v0.1.0
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+        with:
+          terraform_version: 0.12.21
+      - name: Install go modules
+        run: |
+          go get github.com/gruntwork-io/terratest/modules/http-helper
+          go get github.com/jinzhu/copier
+          go get golang.org/x/crypto/ssh
+      - name: Run Test
+        working-directory: tfinfra/test
+        run: go test
+        env:
+           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
