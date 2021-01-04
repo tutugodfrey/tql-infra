@@ -1,10 +1,20 @@
-# tql-infra
-IAC provisioning with terraform and docker-compose
+# TalentQL assessment Tasks
+
+---
+
+As part of completing the tasks I've created three Github Action workflows that automate the required for the tasks in this assessment. You can the workflows by clicking on the **Actions** tab of the of the Github menu. Below is a brief description of the workflows
+
+**Terraform CI:** pipeline runs basic terraform commands `fmt`, `init` `plan` on push and pull requests. Terraform `apply` is to run conditionally when push to `main` branch.
+
+**Integration Test** The uses `terratest` present `test` folder to run test againt the `IaC` code. The test will provision resources on GCP (Network, Subnetwork, Firewall rules, Compute engine VM), install apache server, modify the content of the default index.html to contain **Hello world** (That's what we will be testing for), run curl on the external IP address of the server. After the test succeed, Terraform destroy/clean all the resources
+
+**json2xml-pipeline:** The workflow automate all the step required to build docker images for encryption and decryption, start the containers, convert the json file in the encryption-container to xml file and encrypt the file. It then place the file in the /shared directory (docker volume mount) where it is accessible by the decryption container. The workflow the start the decryption container, retrieve the file from the `/shared` directory, decrypt it and place it in the current working directory.
+
+You can look at the workflows output to see all that happened. The descriptions below will help with the setup instructions if it is necessary to run them in your local environmet.
 
 ## Task 1: Deploy python scripts to convert json file to xml file
 
 This task deploys two containers to encrypt and decrypt an xml file.
-
 ### Container 1: encrypt-container
 
 The container contains a python script to convert a json file to a xml file, encrypt the file and place the encrypted file in a shared directory `/shared` where it can be accessible to decrypt-container
@@ -80,13 +90,31 @@ A shell script `deploy.sh` has been provisioned in the `pyjson2xml` directory to
 
 You can also use docker compose to deploy the container services. Following steps shows how to deploy using docker-compose
 
-- `docker-compose compose.yml`
+- `docker-compose up`
 
 Thereafter, you can follow the steps outline above for starting, stoping, encrpting, and decrypting files needed
 
+---
 
-## Build Infrastucture as Code (IaC) 
+## Task 2: Build Infrastucture as Code (IaC) 
 
-# Install packages
-`go get github.com/gruntwork-io/terratest/modules/http-helperz`
+This section provides a decription of how  to set the IaC (Infrastructure as Code) configuration for provision a VM in GCP and installing Apache server using Terraform. To begin clone the repository `git clone https://github.com/tutugodfrey/tql-infra`. The IaC configuration is contained within the `./tfinfra` directory. The directory contains two folders `infra` which holds the actual Terraform configurations for building out the infrastructures in GCP and `test` which uses `terratest` to test the configuration. 
+
+CI pipeline has been configured to run and test the deployments upon push to github. Please see the `Actions` sections of the repo to view the jobs that has ran. If will like to test the deployment manually, please follow the steps below
+
+`git clone https://github.com/tutugodfrey/tql-infra` clone the repository
+
+`cd tql-infra/tfinfra/test` change directory to the test folder
+
+`go test` run the test. 
+
+Please note you will need to update the project name variable in tfinfra/infra/main.tf to a project in your GCP account to for the test to run. Also, your GLOUD SDK need to have Terraform and Golang properly configured to ensure you don't have an issue running the test.
+
+# Install packages 
+
+If you encounter an error that any of the following packages are missing, please run the command to install them and run the test again
+
+`go get github.com/gruntwork-io/terratest/modules/http-helper`
+
 `go get github.com/jinzhu/copier`
+
