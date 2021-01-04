@@ -1,11 +1,15 @@
+variable "project_id" {
+  default = "todo-er"
+}
+
 resource "google_compute_network" "tfnetwork" {
   name                    = "tfnetwork"
-  project                 = "todo-er"
+  project                 = var.project_id
   auto_create_subnetworks = false
 }
 
 resource "google_compute_subnetwork" "subnet-europe-west1" {
-  project       = "todo-er"
+  project       = var.project_id
   name          = "subnet-europe-west1"
   network       = google_compute_network.tfnetwork.self_link
   ip_cidr_range = "10.2.0.0/16"
@@ -13,7 +17,7 @@ resource "google_compute_subnetwork" "subnet-europe-west1" {
 }
 
 resource "google_compute_firewall" "tfnetwork-allow-http-ssh-icmp" {
-  project = "todo-er"
+  project = var.project_id
   name    = "tfnetwork-allow-http-ssh-icmp"
   network = google_compute_network.tfnetwork.self_link
   allow {
@@ -26,7 +30,7 @@ resource "google_compute_firewall" "tfnetwork-allow-http-ssh-icmp" {
 }
 
 resource "google_compute_instance" "vm_instance" {
-  project                 = "todo-er"
+  project                 = var.project_id
   name                    = "apache-server"
   zone                    = "europe-west1-d"
   machine_type            = "n1-standard-1"
