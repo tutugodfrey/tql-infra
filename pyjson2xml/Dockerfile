@@ -8,7 +8,7 @@ RUN apt install vim -y
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
-COPY ./encrypt.py ./json2xml.py ./functs.py ./myjson.json ./
+COPY ./encrypt.py ./json2xml.py ./functs.py ./myjson.json ./entrypoint-encrypt.sh ./
 
 # CMD [ "./json2xml.py", "myjson.json" ]
 CMD bash

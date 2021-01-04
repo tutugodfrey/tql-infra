@@ -8,7 +8,7 @@ RUN apt install vim -y
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
-COPY ./decrypt.py functs.py ./
+COPY ./decrypt.py ./entrypoint-decrypt.sh functs.py ./
 
 # CMD [ "./decrypt.py", "myjson.xml" ]
 CMD bash

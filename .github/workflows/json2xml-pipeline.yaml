@@ -1,0 +1,42 @@
+name: 'Json to XML Pipeline'
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+jobs:
+  install_docker:
+    name: 'Install docker engine'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+      #- name: Install docker
+      #working-directory: ./pyjson2xml
+      # run: ./install-docker.sh
+      #run: echo START THE DOCKER BUILD
+
+    - name: build images
+      working-directory: ./pyjson2xml
+      run: '. ./deploy.sh'
+
+    - name: check images
+      working-directory: ./pyjson2xml
+      run: docker images
+
+    - name: Run start encrypt container
+      working-directory: ./pyjson2xml
+      run: |
+        ls -al
+        docker run --name encrypt-container --entrypoint ./entrypoint-encrypt.sh -v sharedir:/shared encrypt-img
+    - name: Run the decrypt container
+      working-directory: ./pyjson2xml
+      run: docker run --name decrypt-container --entrypoint ./entrypoint-decrypt.sh -v sharedir:/shared decrypt-img
+
+    - name: Thanks
+      run:  echo THANKS YOU FOR FOLLOWING THE WORKFLOW
+
+
