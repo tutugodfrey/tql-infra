@@ -4,3 +4,5 @@ tfinfra/infra/terraform.tfstate.backup
 pyjson2xml/__pycache__/
 pyjson2xml/env/
 pyjson2xml/*.xml
+terraform.tfstate
+terraform.tfstate.backup
